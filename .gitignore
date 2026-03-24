@@ -18,7 +18,8 @@ dist/
 *.egg-info/
 
 # IDEs
-.vscode/
+.vscode/*
+!.vscode/mcp.json
 .idea/
 
 # OS

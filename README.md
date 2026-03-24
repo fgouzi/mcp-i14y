@@ -71,9 +71,15 @@ curl http://localhost:8000/health
 
 ---
 
-## Connect to Claude Desktop
+## Connect to your AI assistant
 
-Add this to your `claude_desktop_config.json`:
+The MCP endpoint is `http://localhost:8000/mcp` (Streamable HTTP / JSON-RPC).
+
+### Claude Desktop
+
+Add to `claude_desktop_config.json`:
+
+> macOS/Linux: `~/.claude/claude_desktop_config.json` · Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
@@ -86,19 +92,65 @@ Add this to your `claude_desktop_config.json`:
 }
 ```
 
-> On macOS/Linux: `~/.claude/claude_desktop_config.json`
-> On Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+### Claude Code (CLI)
 
----
+```bash
+/mcp add i14y http://localhost:8000/mcp
+```
 
-## Connect to other MCP clients
+### GitHub Copilot (VS Code)
 
-The MCP endpoint is `http://localhost:8000/mcp` using the **Streamable HTTP** transport (JSON-RPC). This is compatible with:
+Requires **VS Code 1.112+** with the GitHub Copilot Chat extension.
 
-- [Claude Desktop](https://claude.ai/download)
-- [Claude Code](https://claude.ai/code) (`/mcp add i14y http://localhost:8000/mcp`)
-- [MCP Inspector](https://github.com/modelcontextprotocol/inspector) (`npx @modelcontextprotocol/inspector http://localhost:8000/mcp`)
-- Any MCP-compatible client supporting the Streamable HTTP transport
+A `.vscode/mcp.json` file is already included in this repository. After starting the server:
+
+1. Open the repo in VS Code — a **"Start"** button appears at the top of `.vscode/mcp.json`
+2. Click **Start** (or run `MCP: List Servers` from the Command Palette)
+3. Open Copilot Chat (`Ctrl+Shift+I` / `Cmd+Shift+I`) and switch to **Agent** mode
+4. Click the **Tools** icon to confirm the i14y tools are available
+
+To configure manually in another project, create `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "i14y": {
+      "type": "http",
+      "url": "http://localhost:8000/mcp"
+    }
+  }
+}
+```
+
+### Mistral Le Chat
+
+1. Open [Le Chat](https://chat.mistral.ai) → side panel → **Intelligence** → **Connectors**
+2. Click **+ Add Connector** → **Custom MCP Connector**
+3. Fill in:
+   - **Connector name**: `i14y`
+   - **Connection server URL**: `http://localhost:8000/mcp`
+   - **Authentication**: None
+4. Click **Connect**
+5. Enable it in any conversation via the **Tools icon** (four squares) below the chat input
+
+### Mistral Vibe (CLI agent)
+
+Add to your `config.toml`:
+
+```toml
+[[mcp_servers]]
+name = "i14y"
+transport = "streamable-http"
+url = "http://localhost:8000/mcp"
+```
+
+Tools are then available as `i14y_list_datasets`, `i14y_get_concept`, etc.
+
+### MCP Inspector (testing)
+
+```bash
+npx @modelcontextprotocol/inspector http://localhost:8000/mcp
+```
 
 ---
 
