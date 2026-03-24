@@ -1,0 +1,22 @@
+"""Tool registration for mcp-i14y."""
+
+from __future__ import annotations
+
+from mcp.server.fastmcp import FastMCP
+
+__all__ = ["register_tools"]
+
+
+def register_tools(mcp: FastMCP) -> None:
+    """Register all I14Y MCP tools with the server."""
+    from tools.catalogs import register as register_catalogs
+    from tools.concepts import register as register_concepts
+    from tools.datasets import register as register_datasets
+    from tools.dataservices import register as register_dataservices
+    from tools.publicservices import register as register_publicservices
+
+    register_datasets(mcp)
+    register_dataservices(mcp)
+    register_concepts(mcp)
+    register_publicservices(mcp)
+    register_catalogs(mcp)
