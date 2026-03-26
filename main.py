@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
+from contextlib import asynccontextmanager
 
 import uvicorn
 from mcp.server.fastmcp import FastMCP
@@ -52,15 +53,23 @@ async def health(request: Request) -> JSONResponse:
 
 
 # ── ASGI app ───────────────────────────────────────────────────────────────────
-_mcp_app = mcp.streamable_http_app()
-
-# Mount the health route alongside the MCP app
 from starlette.applications import Starlette
 
+_mcp_app = mcp.streamable_http_app()
+
+
+@asynccontextmanager
+async def lifespan(app: Starlette):
+    # Propagate the MCP app's lifespan so its session manager task group is initialized
+    async with _mcp_app.router.lifespan_context(_mcp_app):
+        yield
+
+
 app = Starlette(
+    lifespan=lifespan,
     routes=[
         Route("/health", health),
-    ]
+    ],
 )
 
 # Mount MCP app at root so /mcp path is preserved (Starlette strips mount prefix)
