@@ -25,4 +25,4 @@ def get_server_host() -> str:
 
 
 def get_server_port() -> int:
-    return int(os.getenv("MCP_PORT", "8000"))
+    return int(os.getenv("MCP_PORT", "8400"))

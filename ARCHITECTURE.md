@@ -9,7 +9,7 @@
 │  LLM Client (Claude Desktop / Claude Code / Copilot…)   │
 └───────────────────┬─────────────────────────────────────┘
                     │  MCP (Streamable HTTP / JSON-RPC)
-                    │  POST http://localhost:8000/mcp
+                    │  POST http://localhost:8400/mcp
                     ▼
 ┌─────────────────────────────────────────────────────────┐
 │                      mcp-i14y                           │
@@ -176,14 +176,14 @@ Publication levels: `Internal` (visible only to partners) | `Public` (visible to
 ```bash
 uv sync
 uv run python main.py
-# Server: http://localhost:8000
+# Server: http://localhost:8400
 ```
 
 ### Docker
 
 ```bash
 docker compose up -d
-# Server: http://localhost:8000
+# Server: http://localhost:8400
 ```
 
 The Dockerfile uses `ghcr.io/astral-sh/uv:python3.13-bookworm-slim` as the base image.

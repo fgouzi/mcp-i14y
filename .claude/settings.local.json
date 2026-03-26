@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv run python -c \":*)",
+      "mcp__mcp-i14y__list_concepts"
+    ]
+  }
+}

@@ -131,7 +131,7 @@ def register(mcp):
 | Variable | Default | Description |
 |---|---|---|
 | `MCP_HOST` | `0.0.0.0` | Server bind address |
-| `MCP_PORT` | `8000` | Server port |
+| `MCP_PORT` | `8400` | Server port |
 | `I14Y_API_ENV` | `prod` | API environment: `prod` or `test` |
 | `LOG_LEVEL` | `INFO` | Python logging level |
 | `SENTRY_DSN` | _(empty)_ | Sentry DSN for error tracking |

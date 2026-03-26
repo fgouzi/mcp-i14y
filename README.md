@@ -57,7 +57,7 @@ cp .env.example .env
 docker compose up -d
 ```
 
-The server will be available at `http://localhost:8000/mcp`.
+The server will be available at `http://localhost:8400/mcp`.
 
 ### Option 2: Local setup with uv
 
@@ -71,7 +71,7 @@ uv run python main.py
 ### Verify
 
 ```bash
-curl http://localhost:8000/health
+curl http://localhost:8400/health
 # → {"status":"ok","platform":"i14y","version":"0.1.0"}
 ```
 
@@ -79,7 +79,7 @@ curl http://localhost:8000/health
 
 ## Connect to your AI assistant
 
-The MCP endpoint is `http://localhost:8000/mcp` (Streamable HTTP / JSON-RPC).
+The MCP endpoint is `http://localhost:8400/mcp` (Streamable HTTP / JSON-RPC).
 
 ### Claude Desktop
 
@@ -92,7 +92,7 @@ Add to `claude_desktop_config.json`:
   "mcpServers": {
     "i14y": {
       "type": "http",
-      "url": "http://localhost:8000/mcp"
+      "url": "http://localhost:8400/mcp"
     }
   }
 }
@@ -101,7 +101,7 @@ Add to `claude_desktop_config.json`:
 ### Claude Code (CLI)
 
 ```bash
-/mcp add i14y http://localhost:8000/mcp
+/mcp add i14y http://localhost:8400/mcp
 ```
 
 ### GitHub Copilot (VS Code)
@@ -122,7 +122,7 @@ To configure manually in another project, create `.vscode/mcp.json`:
   "servers": {
     "i14y": {
       "type": "http",
-      "url": "http://localhost:8000/mcp"
+      "url": "http://localhost:8400/mcp"
     }
   }
 }
@@ -134,7 +134,7 @@ To configure manually in another project, create `.vscode/mcp.json`:
 2. Click **+ Add Connector** → **Custom MCP Connector**
 3. Fill in:
    - **Connector name**: `i14y`
-   - **Connection server URL**: `http://localhost:8000/mcp`
+   - **Connection server URL**: `http://localhost:8400/mcp`
    - **Authentication**: None
 4. Click **Connect**
 5. Enable it in any conversation via the **Tools icon** (four squares) below the chat input
@@ -147,7 +147,7 @@ Add to your `config.toml`:
 [[mcp_servers]]
 name = "i14y"
 transport = "streamable-http"
-url = "http://localhost:8000/mcp"
+url = "http://localhost:8400/mcp"
 ```
 
 Tools are then available as `i14y_list_datasets`, `i14y_get_concept`, etc.
@@ -155,7 +155,7 @@ Tools are then available as `i14y_list_datasets`, `i14y_get_concept`, etc.
 ### MCP Inspector (testing)
 
 ```bash
-npx @modelcontextprotocol/inspector http://localhost:8000/mcp
+npx @modelcontextprotocol/inspector http://localhost:8400/mcp
 ```
 
 ---
@@ -367,7 +367,7 @@ Copy `.env.example` to `.env` and adjust:
 | Variable | Default | Description |
 |---|---|---|
 | `MCP_HOST` | `0.0.0.0` | Bind address (`127.0.0.1` for local-only) |
-| `MCP_PORT` | `8000` | Server port |
+| `MCP_PORT` | `8400` | Server port |
 | `I14Y_API_ENV` | `prod` | `prod` or `test` |
 | `LOG_LEVEL` | `INFO` | Logging level |
 | `SENTRY_DSN` | _(empty)_ | Optional Sentry DSN |
