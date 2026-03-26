@@ -11,6 +11,7 @@ from mcp.server.fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.routing import Route
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from helpers.env_config import get_server_host, get_server_port
 from tools import register_tools
@@ -52,6 +53,32 @@ async def health(request: Request) -> JSONResponse:
     return JSONResponse({"status": "ok", "platform": "i14y", "version": "0.1.0"})
 
 
+# ── Accept header compatibility middleware ─────────────────────────────────────
+class MCPAcceptPatchMiddleware:
+    """Patch Accept header for /mcp requests to satisfy FastMCP's strict validation.
+
+    Claude Code VS Code extension sends only 'Accept: application/json'.
+    FastMCP 1.26+ requires both 'application/json' and 'text/event-stream'.
+    """
+
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] == "http" and scope.get("path", "").startswith("/mcp"):
+            headers = list(scope["headers"])
+            for i, (k, v) in enumerate(headers):
+                if k.lower() == b"accept":
+                    decoded = v.decode()
+                    if "text/event-stream" not in decoded:
+                        headers[i] = (k, (decoded + ", text/event-stream").encode())
+                    break
+            else:
+                headers.append((b"accept", b"application/json, text/event-stream"))
+            scope = {**scope, "headers": headers}
+        await self.app(scope, receive, send)
+
+
 # ── ASGI app ───────────────────────────────────────────────────────────────────
 from starlette.applications import Starlette
 
@@ -74,6 +101,9 @@ app = Starlette(
 
 # Mount MCP app at root so /mcp path is preserved (Starlette strips mount prefix)
 app.mount("/", _mcp_app)
+
+# Wrap with compatibility middleware for Claude Code VS Code extension
+app = MCPAcceptPatchMiddleware(app)
 
 # ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
