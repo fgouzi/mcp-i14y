@@ -91,3 +91,36 @@ class I14YApiClient:
             return json.dumps(response.json(), ensure_ascii=False, indent=2)
         except Exception:
             return response.text
+
+    async def get_all_pages(
+        self,
+        path: str,
+        max_items: int = 500,
+        **params: object,
+    ) -> list[dict]:
+        """Fetch all pages of a list endpoint up to max_items total.
+
+        Args:
+            path: API path relative to the base URL (e.g. "/datasets").
+            max_items: Maximum number of items to return across all pages.
+            **params: Additional query parameters; None values are stripped.
+
+        Returns:
+            Flat list of resource dicts from the ``data`` array across all pages.
+        """
+        results: list[dict] = []
+        page = 1
+        while len(results) < max_items:
+            raw = await self.get(path, page=page, pageSize=100, **params)
+            try:
+                data = json.loads(raw)
+            except Exception:
+                break
+            if "error" in data:
+                break
+            items = data.get("data", [])
+            results.extend(items)
+            if len(items) < 100:  # reached the last page
+                break
+            page += 1
+        return results[:max_items]
