@@ -42,6 +42,8 @@ The **I14Y Interoperability Platform** (operated by the Swiss Federal Statistica
 | `get_mappingtable_relations` | Export all mapping relations (value correspondences) as JSON or CSV |
 | `catalog_search` | Full-text search across all resource types (server-side, via CORE API) |
 | `get_dataset_by_identifier` | Get a dataset by its short identifier (not UUID) |
+| `check_dataset_has_structure` | Check whether a dataset has a structural model defined |
+| `get_dataset_model_graph` | Get the dataset schema as a schema graph (nodes/edges) |
 | `get_dataservice_by_identifier` | Get a data service by its short identifier |
 | `get_publicservice_by_identifier` | Get a public service by its short identifier |
 | `get_publicservice_relations` | Get related public services |
@@ -356,6 +358,20 @@ Full-text search across all I14Y resource types (server-side, via CORE API).
 | Parameter | Type | Description |
 |---|---|---|
 | `identifier` | string | Dataset short identifier (e.g. `"px-x-0602010000_109"`) |
+
+#### `check_dataset_has_structure`
+| Parameter | Type | Description |
+|---|---|---|
+| `dataset_id` | string | Dataset UUID |
+
+Returns `true` if a structural model exists, `false` otherwise. Use this before calling `get_dataset_structure()` to filter datasets that have a documented schema.
+
+#### `get_dataset_model_graph`
+| Parameter | Type | Description |
+|---|---|---|
+| `dataset_id` | string | Dataset UUID |
+
+Returns the dataset schema as a graph (nodes/edges) — suited for programmatic processing. Complements `get_dataset_structure()` which returns RDF/JSON-LD.
 
 ---
 
