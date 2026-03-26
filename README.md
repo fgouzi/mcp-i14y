@@ -40,9 +40,23 @@ The **I14Y Interoperability Platform** (operated by the Swiss Federal Statistica
 | `list_mappingtables` | List mapping tables (source → target codelist correspondences) |
 | `get_mappingtable` | Get full metadata for a mapping table |
 | `get_mappingtable_relations` | Export all mapping relations (value correspondences) as JSON or CSV |
-| `search_datasets` | Search datasets by keyword across titles and descriptions |
-| `search_concepts` | Search concepts (codelists) by keyword |
-| `find_concept_for_variable` | Find concepts matching a dataset variable name |
+| `catalog_search` | Full-text search across all resource types (server-side, via CORE API) |
+| `get_dataset_by_identifier` | Get a dataset by its short identifier (not UUID) |
+| `get_dataservice_by_identifier` | Get a data service by its short identifier |
+| `get_publicservice_by_identifier` | Get a public service by its short identifier |
+| `get_publicservice_relations` | Get related public services |
+| `get_concept_by_identifier` | Get concept(s) by short identifier (e.g. "HGDE_KT") |
+| `get_codelist_entries` | Paginated codelist entries with full annotations |
+| `get_codelist_entry_by_code` | Look up a single codelist entry by code value |
+| `get_codelist_entries_children` | Navigate hierarchical codelists (children of a code) |
+| `search_codelist_entries` | Search entries within a specific codelist |
+| `list_catalogs` | List all DCAT catalogs |
+| `get_catalog_records` | Get records (resources) from a catalog |
+| `get_catalog_themes` | Get themes used in a catalog (DCAT-AP alignment) |
+| `list_agents` | List all publishing organisations (with identifiers for filtering) |
+| `get_agent` | Get full metadata for a publishing organisation |
+| `list_vocabularies` | List all controlled vocabularies (themes, licenses, formats…) |
+| `get_vocabulary` | Get all entries of a controlled vocabulary for RDF/DCAT-AP use |
 
 ---
 
@@ -283,27 +297,141 @@ A mapping table defines a correspondence between two codelists (source → targe
 
 Since the I14Y API has no full-text search endpoint, these tools fetch pages progressively and rank results client-side.
 
-#### `search_datasets`
+#### `catalog_search`
+Full-text search across all I14Y resource types (server-side, via CORE API).
+
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `keyword` | string | — | Search term(s) — space-separated words are scored independently |
-| `publisher_identifier` | string | — | Optionally restrict to a single publisher |
-| `max_results` | integer | `10` | Maximum number of results to return |
+| `query` | string | — | Free-text search query (any language) |
+| `types` | list | — | Filter by type(s): `Dataset`, `DataService`, `PublicService`, `Concept`, `MappingTable` |
+| `publishers` | list | — | Filter by publisher identifier(s), e.g. `["CH1"]` |
+| `statuses` | list | — | Filter by registration status(es) |
+| `page` | integer | `1` | Page number |
+| `page_size` | integer | `25` | Results per page |
 
-#### `search_concepts`
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| `keyword` | string | — | Search term(s) |
-| `publisher_identifier` | string | — | Optionally restrict to a single publisher |
-| `max_results` | integer | `10` | Maximum number of results to return |
+---
 
-#### `find_concept_for_variable`
-Given a variable name from `get_dataset_structure()`, finds the best matching I14Y concept (codelist).
+### Concepts (CORE)
 
+#### `get_concept_by_identifier`
 | Parameter | Type | Description |
 |---|---|---|
-| `variable_name` | string | Variable name to look up (any language) |
-| `publisher_identifier` | string | Optionally restrict to a single publisher |
+| `identifier` | string | Short identifier string (e.g. `"HGDE_KT"`, `"CL_NOGA"`) |
+
+#### `get_codelist_entries`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `concept_id` | string | — | Concept UUID |
+| `page` | integer | `1` | Page number |
+| `page_size` | integer | `100` | Results per page |
+
+#### `get_codelist_entry_by_code`
+| Parameter | Type | Description |
+|---|---|---|
+| `concept_id` | string | Concept UUID |
+| `code` | string | Code value to look up (e.g. `"1"`, `"CH"`) |
+
+#### `get_codelist_entries_children`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `concept_id` | string | — | Concept UUID |
+| `parent_code` | string | — | Parent code whose children to retrieve |
+| `page` | integer | `1` | Page number |
+| `page_size` | integer | `100` | Results per page |
+
+#### `search_codelist_entries`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `concept_id` | string | — | Concept UUID |
+| `query` | string | — | Search term |
+| `language` | string | `fr` | Language for label matching: `fr`, `de`, `it`, `en` |
+| `page` | integer | `1` | Page number |
+| `page_size` | integer | `25` | Results per page |
+
+---
+
+### Datasets (CORE)
+
+#### `get_dataset_by_identifier`
+| Parameter | Type | Description |
+|---|---|---|
+| `identifier` | string | Dataset short identifier (e.g. `"px-x-0602010000_109"`) |
+
+---
+
+### Data Services (CORE)
+
+#### `get_dataservice_by_identifier`
+| Parameter | Type | Description |
+|---|---|---|
+| `identifier` | string | Data service short identifier |
+
+---
+
+### Public Services (CORE)
+
+#### `get_publicservice_by_identifier`
+| Parameter | Type | Description |
+|---|---|---|
+| `identifier` | string | Public service short identifier |
+
+#### `get_publicservice_relations`
+| Parameter | Type | Description |
+|---|---|---|
+| `publicservice_id` | string | Public service UUID |
+
+---
+
+### Catalogs (CORE)
+
+#### `list_catalogs`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `page` | integer | `1` | Page number |
+| `page_size` | integer | `25` | Results per page |
+
+#### `get_catalog_records`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `catalog_id` | string | — | Catalog UUID |
+| `page` | integer | `1` | Page number |
+| `page_size` | integer | `25` | Results per page |
+
+#### `get_catalog_themes`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `catalog_id` | string | — | Catalog UUID |
+| `page` | integer | `1` | Page number |
+| `page_size` | integer | `100` | Results per page |
+
+---
+
+### Agents
+
+#### `list_agents`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `page` | integer | `1` | Page number |
+| `page_size` | integer | `25` | Results per page |
+
+#### `get_agent`
+| Parameter | Type | Description |
+|---|---|---|
+| `agent_id` | string | Agent UUID |
+
+---
+
+### Vocabularies
+
+Controlled vocabularies define valid values for DCAT-AP metadata fields (themes, access rights, licenses, media types, etc.).
+
+#### `list_vocabularies`
+No parameters. Returns all available vocabulary configurations with their identifiers.
+
+#### `get_vocabulary`
+| Parameter | Type | Description |
+|---|---|---|
+| `identifier` | string | Vocabulary identifier (e.g. `"Concept_DATASET_THEME"`, `"VOCAB_EU_FREQUENCY"`) |
 
 ---
 
@@ -318,9 +446,13 @@ Once connected, try asking your LLM assistant:
 - *"Export the catalog of the OFS in Turtle format."*
 - *"What public administrative services are registered on I14Y?"*
 - *"Search for datasets about employment by canton."*
-- *"Find the concept that matches the variable 'Secteur économique'."*
+- *"Find the concept codelist for 'Secteur économique'."*
 - *"List all mapping tables that link old canton codes to new ones."*
 - *"Export the mapping relations for mapping table `xyz-456` as CSV."*
+- *"Find the dataset with identifier `px-x-0602010000_109`."*
+- *"Get the valid values for DCAT themes (data subjects)."*
+- *"Which organisations publish data on I14Y?"*
+- *"Get all child codes of canton 1 in the commune hierarchy."*
 
 ---
 

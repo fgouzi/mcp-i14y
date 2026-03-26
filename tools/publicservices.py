@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
 
+from helpers.core_api_client import CoreApiClient
 from helpers.i14y_api_client import I14YApiClient
 
 __all__ = ["register"]
@@ -62,3 +63,32 @@ def register(mcp: FastMCP) -> None:
         """
         async with I14YApiClient() as client:
             return await client.get(f"/publicservices/{publicservice_id}")
+
+    @mcp.tool()
+    async def get_publicservice_by_identifier(identifier: str) -> str:
+        """Get a public service by its human-readable identifier (not UUID).
+
+        Args:
+            identifier: The public service identifier string.
+
+        Returns:
+            JSON object with full public service metadata.
+        """
+        async with CoreApiClient() as client:
+            return await client.get(f"/PublicServices/by-identifier/{identifier}")
+
+    @mcp.tool()
+    async def get_publicservice_relations(publicservice_id: str) -> str:
+        """Get public services related to a given public service.
+
+        Returns other public services that are semantically linked to this one
+        (e.g. prerequisite services, related administrative procedures).
+
+        Args:
+            publicservice_id: The unique identifier (UUID) of the public service.
+
+        Returns:
+            JSON array of related public services.
+        """
+        async with CoreApiClient() as client:
+            return await client.get(f"/PublicServices/{publicservice_id}/relations")

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
 
+from helpers.core_api_client import CoreApiClient
 from helpers.i14y_api_client import I14YApiClient
 
 __all__ = ["register"]
@@ -63,3 +64,16 @@ def register(mcp: FastMCP) -> None:
         """
         async with I14YApiClient() as client:
             return await client.get(f"/dataservices/{dataservice_id}")
+
+    @mcp.tool()
+    async def get_dataservice_by_identifier(identifier: str) -> str:
+        """Get a data service by its human-readable identifier (not UUID).
+
+        Args:
+            identifier: The data service identifier string.
+
+        Returns:
+            JSON object with full data service metadata.
+        """
+        async with CoreApiClient() as client:
+            return await client.get(f"/DataServices/by-identifier/{identifier}")

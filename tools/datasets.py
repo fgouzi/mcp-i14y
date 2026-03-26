@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
 
+from helpers.core_api_client import CoreApiClient
 from helpers.i14y_api_client import I14YApiClient
 
 __all__ = ["register"]
@@ -83,3 +84,19 @@ def register(mcp: FastMCP) -> None:
             return f'{{"error": "Invalid format \'{format}\'. Valid values: {sorted(valid)}"}}'
         async with I14YApiClient() as client:
             return await client.get(f"/datasets/{dataset_id}/structures/exports/{format}")
+
+    @mcp.tool()
+    async def get_dataset_by_identifier(identifier: str) -> str:
+        """Get a dataset by its human-readable identifier (not UUID).
+
+        Use this when you know the dataset's short identifier (e.g. "px-x-0602010000_109")
+        rather than its UUID. More convenient than list_datasets() with a filter.
+
+        Args:
+            identifier: The dataset identifier string.
+
+        Returns:
+            JSON object with full dataset metadata.
+        """
+        async with CoreApiClient() as client:
+            return await client.get(f"/Datasets/by-identifier/{identifier}")
