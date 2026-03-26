@@ -59,6 +59,7 @@ The **I14Y Interoperability Platform** (operated by the Swiss Federal Statistica
 | `get_agent` | Get full metadata for a publishing organisation |
 | `list_vocabularies` | List all controlled vocabularies (themes, licenses, formats…) |
 | `get_vocabulary` | Get all entries of a controlled vocabulary for RDF/DCAT-AP use |
+| `get_distribution_content` | Fetch the actual content of a distribution file (CSV, JSON, XML…) |
 
 ---
 
@@ -448,6 +449,25 @@ No parameters. Returns all available vocabulary configurations with their identi
 | Parameter | Type | Description |
 |---|---|---|
 | `identifier` | string | Vocabulary identifier (e.g. `"Concept_DATASET_THEME"`, `"VOCAB_EU_FREQUENCY"`) |
+
+---
+
+### Distributions
+
+#### `get_distribution_content`
+Fetch the actual data content of a DCAT distribution file.
+
+Typical workflow:
+1. Call `get_dataset(dataset_id)` → find `distributions[n].downloadUrl.uri`
+2. Call `get_distribution_content(url)` → returns the file content
+
+Supported formats: JSON, CSV, XML, RDF/Turtle, GeoJSON, plain text.
+Binary formats (PDF, ZIP, Excel, images) are rejected with an error message.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `download_url` | string | — | The `downloadUrl.uri` value from a distribution object |
+| `max_kb` | integer | `200` | Maximum content size in KB — larger files are truncated with a warning |
 
 ---
 
