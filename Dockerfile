@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Install dependencies first (layer cache)
 COPY pyproject.toml ./
-RUN uv sync --no-dev --no-install-project
+RUN uv sync --no-dev
 
 # Copy source
 COPY . .
