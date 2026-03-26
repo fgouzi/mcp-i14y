@@ -15,6 +15,7 @@ def register_tools(mcp: FastMCP) -> None:
     from tools.dataservices import register as register_dataservices
     from tools.publicservices import register as register_publicservices
 
+    from tools.mappingtables import register as register_mappingtables
     from tools.search import register as register_search
 
     register_datasets(mcp)
@@ -22,4 +23,5 @@ def register_tools(mcp: FastMCP) -> None:
     register_concepts(mcp)
     register_publicservices(mcp)
     register_catalogs(mcp)
+    register_mappingtables(mcp)
     register_search(mcp)

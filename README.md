@@ -37,6 +37,12 @@ The **I14Y Interoperability Platform** (operated by the Swiss Federal Statistica
 | `list_publicservices` | List public services with filters |
 | `get_publicservice` | Get full metadata for a public service |
 | `get_catalog` | Export a catalog in DCAT-AP format (Turtle or RDF/XML) |
+| `list_mappingtables` | List mapping tables (source → target codelist correspondences) |
+| `get_mappingtable` | Get full metadata for a mapping table |
+| `get_mappingtable_relations` | Export all mapping relations (value correspondences) as JSON or CSV |
+| `search_datasets` | Search datasets by keyword across titles and descriptions |
+| `search_concepts` | Search concepts (codelists) by keyword |
+| `find_concept_for_variable` | Find concepts matching a dataset variable name |
 
 ---
 
@@ -245,6 +251,62 @@ Same filter parameters as `list_datasets` (with `publicservice_identifier`).
 
 ---
 
+### Mapping Tables
+
+A mapping table defines a correspondence between two codelists (source → target), enabling semantic alignment across classification systems (e.g. old canton codes → new codes, Swiss codes → European standards).
+
+#### `list_mappingtables`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `publisher_identifier` | string | — | Filter by publisher organisation ID |
+| `mappingtable_identifier` | string | — | Filter by mapping table identifier |
+| `version` | string | — | Filter by version string |
+| `registration_status` | string | — | `Initial`, `Candidate`, `Recorded`, `Qualified`, `Standard`, `PreferredStandard`, `Superseded`, `Retired` |
+| `publication_level` | string | — | `Internal` or `Public` |
+| `page` | integer | `1` | Page number |
+| `page_size` | integer | `25` | Results per page |
+
+#### `get_mappingtable`
+| Parameter | Type | Description |
+|---|---|---|
+| `mappingtable_id` | string | Mapping table unique identifier (UUID) |
+
+#### `get_mappingtable_relations`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `mappingtable_id` | string | — | Mapping table unique identifier (UUID) |
+| `format` | string | `Json` | `Json` or `Csv` |
+
+---
+
+### Search
+
+Since the I14Y API has no full-text search endpoint, these tools fetch pages progressively and rank results client-side.
+
+#### `search_datasets`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `keyword` | string | — | Search term(s) — space-separated words are scored independently |
+| `publisher_identifier` | string | — | Optionally restrict to a single publisher |
+| `max_results` | integer | `10` | Maximum number of results to return |
+
+#### `search_concepts`
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `keyword` | string | — | Search term(s) |
+| `publisher_identifier` | string | — | Optionally restrict to a single publisher |
+| `max_results` | integer | `10` | Maximum number of results to return |
+
+#### `find_concept_for_variable`
+Given a variable name from `get_dataset_structure()`, finds the best matching I14Y concept (codelist).
+
+| Parameter | Type | Description |
+|---|---|---|
+| `variable_name` | string | Variable name to look up (any language) |
+| `publisher_identifier` | string | Optionally restrict to a single publisher |
+
+---
+
 ## Example Prompts
 
 Once connected, try asking your LLM assistant:
@@ -255,6 +317,10 @@ Once connected, try asking your LLM assistant:
 - *"Get the full details for dataset with ID `abc-123`."*
 - *"Export the catalog of the OFS in Turtle format."*
 - *"What public administrative services are registered on I14Y?"*
+- *"Search for datasets about employment by canton."*
+- *"Find the concept that matches the variable 'Secteur économique'."*
+- *"List all mapping tables that link old canton codes to new ones."*
+- *"Export the mapping relations for mapping table `xyz-456` as CSV."*
 
 ---
 
