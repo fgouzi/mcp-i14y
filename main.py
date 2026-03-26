@@ -63,8 +63,8 @@ app = Starlette(
     ]
 )
 
-# Mount MCP app under /mcp
-app.mount("/mcp", _mcp_app)
+# Mount MCP app at root so /mcp path is preserved (Starlette strips mount prefix)
+app.mount("/", _mcp_app)
 
 # ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
